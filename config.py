@@ -1,4 +1,4 @@
-token = ''
+token = 'Здесь место для вашего токена'
 
 
 
@@ -8,6 +8,6 @@ FFMPEG_OPTIONS = {'before_options': '-reconnect 1 -reconnect_streamed 1 -reconne
 
 
 
-Data = [{'BasePrefix':'!'},{}]
+Data = [{'BasePrefix':'Здесь место для вашего префикса по умолчанию'},{}]
 
 

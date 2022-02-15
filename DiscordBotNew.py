@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands
-from config import *
+from SelfConfig import *
 from Music import Player
 from Moder import Moderation
 
