@@ -1,8 +1,8 @@
 import discord
 from discord.ext import commands
-from SelfConfig import *
+from SelfData import *
 from Music import Player
-from Moder import Moderation
+from Moder import Moderation , AutoModeration
 
 import pickle
 
@@ -15,14 +15,18 @@ intents.members = True
 
 # если файл не сушествует - создаёт его с базовыми настройками. если существует - загружает линые настройки
 try:
-    with open('Self.pickle', 'xb') as f:
+    with open('Data.pickle', 'xb') as f:
         pickle.dump(Data, f)
 except:
-    with open('Self.pickle', 'rb') as f:
+    with open('Data.pickle', 'rb') as f:
         Data = pickle.load(f)
 
-
-
+try:
+    with open('ModerData.pickle', 'rb') as f:
+        ModerData = pickle.load(f)
+    MD_Flag = False
+except:
+    MD_Flag = True
 
 # - динамический префикс
 def get_prefix(ctx, message):
@@ -44,6 +48,13 @@ async def on_ready():
 
 @bot.event
 async def on_message(message):
+    if message.author.bot:return
+    #try:                                                                                       # проверка на включенность функции автомодерации
+        #if await data.AModer_status(str(message.guild.id)) == False: pass
+        # else:передаёт сообщение в класс модерации
+    #except: pass # передаёт сообщение в класс модерации
+
+
     try:
         if message.mentions[0] == bot.user:
             try:
@@ -54,6 +65,7 @@ async def on_message(message):
             except: await message.channel.send(f'Текущий префикс на сервере ----> | {Data[0]["BasePrefix"]} |',delete_after=15)
     except:
         pass
+    print (message)
     await bot.process_commands(message)
 
 
@@ -101,6 +113,7 @@ async def setup(): # для подгрузки ког
     await bot.wait_until_ready() #дожидается пока внутренний кэш не будет готов
     bot.add_cog(Player(bot)) # подгружаем когг(связанный с воспроизведением музыки)
     bot.add_cog(Moderation(bot))
+    bot.add_cog(AutoModeration(bot, MD_Flag))
 
 
 bot.loop.create_task(setup()) # запускает асинхронную ф-ю setup
