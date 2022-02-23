@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands
-from SelfConfig import *
+from config import *
 from Music import Player
 from Moder import Moderation
 
@@ -33,7 +33,7 @@ def get_prefix(ctx, message):
 
 
 
-bot = commands.Bot(command_prefix = get_prefix, intents = intents, activity=discord.Game(f'твоём очке')) #переменная bot содержит в себе информацию о боте и его серверах. Тут мы можем установить префикс идр параметры
+bot = commands.Bot(command_prefix = get_prefix, intents = intents, activity=discord.Game(f'ваш статус')) #переменная bot содержит в себе информацию о боте и его серверах. Тут мы можем установить префикс идр параметры
 
 
 @bot.event
