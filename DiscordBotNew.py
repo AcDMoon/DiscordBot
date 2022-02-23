@@ -44,6 +44,7 @@ async def on_ready():
 
 @bot.event
 async def on_message(message):
+    if message.author.bot: return
     try:
         if message.mentions[0] == bot.user:
             try:
