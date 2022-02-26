@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands
-from SelfData import *
+from config import *
 from Music import Player
 from Moder import Moderation , AutoModeration
 
@@ -26,6 +26,7 @@ try:
         ModerData = pickle.load(f)
     MD_Flag = False
 except:
+    ModerData = None
     MD_Flag = True
 
 # - динамический префикс
@@ -37,7 +38,7 @@ def get_prefix(ctx, message):
 
 
 
-bot = commands.Bot(command_prefix = get_prefix, intents = intents, activity=discord.Game(f'твоём очке')) #переменная bot содержит в себе информацию о боте и его серверах. Тут мы можем установить префикс идр параметры
+bot = commands.Bot(command_prefix = get_prefix, intents = intents, activity=discord.Game(f'ваш статус')) #переменная bot содержит в себе информацию о боте и его серверах. Тут мы можем установить префикс идр параметры
 
 
 @bot.event
@@ -49,11 +50,10 @@ async def on_ready():
 @bot.event
 async def on_message(message):
     if message.author.bot:return
-    #try:                                                                                       # проверка на включенность функции автомодерации
-        #if await data.AModer_status(str(message.guild.id)) == False: pass
-        # else:передаёт сообщение в класс модерации
-    #except: pass # передаёт сообщение в класс модерации
 
+    AM = bot.get_cog('AutoModeration')
+    if AM.ModerData[0][message.guild.id][0]['Status'] == False:pass # проверка на включенность функции автомодерации
+    else: await AM.adding(message)
 
     try:
         if message.mentions[0] == bot.user:
@@ -65,7 +65,6 @@ async def on_message(message):
             except: await message.channel.send(f'Текущий префикс на сервере ----> | {Data[0]["BasePrefix"]} |',delete_after=15)
     except:
         pass
-    print (message)
     await bot.process_commands(message)
 
 
@@ -113,8 +112,7 @@ async def setup(): # для подгрузки ког
     await bot.wait_until_ready() #дожидается пока внутренний кэш не будет готов
     bot.add_cog(Player(bot)) # подгружаем когг(связанный с воспроизведением музыки)
     bot.add_cog(Moderation(bot))
-    bot.add_cog(AutoModeration(bot, MD_Flag))
-
+    bot.add_cog(AutoModeration(bot, MD_Flag, ModerData))
 
 bot.loop.create_task(setup()) # запускает асинхронную ф-ю setup
 bot.run(token) # запускает бота
